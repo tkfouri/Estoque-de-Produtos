@@ -20,7 +20,7 @@ int adicionarProduto(struct produto estoque[], int *x) {
     int produtoEncontrado = 0;
 
     printf("Digite o nome do produto:\n");
-    scanf("%s", nomeProduto);
+    scanf(" %[^\n]s", nomeProduto);
 
 
     for (int i = 0; i < *x; i++) {
@@ -31,7 +31,6 @@ int adicionarProduto(struct produto estoque[], int *x) {
             printf("Digite a quantidade a ser acrescentada:\n");
             int quantidadeAdicional;
             scanf("%d", &quantidadeAdicional);
-
 
             if (estoque[i].quantidade + quantidadeAdicional > 100) {
                 printf("Erro: Não é permitido ter mais de 100 unidades de um único produto.\n");
@@ -44,12 +43,10 @@ int adicionarProduto(struct produto estoque[], int *x) {
         }
     }
 
-
     if (!produtoEncontrado) {
         strcpy(estoque[*x].nome, nomeProduto);
         printf("Digite a quantidade inicial:\n");
         scanf("%d", &estoque[*x].quantidade);
-
 
         if (estoque[*x].quantidade > 100) {
             printf("Erro: Não é permitido cadastrar mais de 100 unidades de um único produto.\n");
@@ -71,7 +68,7 @@ int registrarSaida(struct produto estoque[], int x) {
     int produto_encontrado = 0;
 
     printf("Digite o nome do produto para registrar a saída:\n");
-    scanf("%s", nome_produto);
+    scanf(" %[^\n]s", nome_produto);
 
     for (int i = 0; i < x; i++) {
         if (strcmp(estoque[i].nome, nome_produto) == 0) {
