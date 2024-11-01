@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <locale.h>
+#include <string.h>
+
+struct produto {
+    char nome[100];
+    int quantidade;
+    float preco;
+    float valor;
+};
+
+int adicionarProduto(struct produto estoque[], int *x) {
+
+    if (*x >= 100) {
+        printf("Erro: Estoque cheio! Não é possível adicionar mais produtos.\n");
+        return 0;
+    }
+
+    char nomeProduto[100];
+    int produtoEncontrado = 0;
+
+    printf("Digite o nome do produto:\n");
+    scanf("%s", nomeProduto);
+
+
+    for (int i = 0; i < *x; i++) {
+        if (strcmp(estoque[i].nome, nomeProduto) == 0) {
+            produtoEncontrado = 1;
+            printf("Produto já existe no estoque.\n");
+            printf("Quantidade atual de %s: %d\n", estoque[i].nome, estoque[i].quantidade);
+            printf("Digite a quantidade a ser acrescentada:\n");
+            int quantidadeAdicional;
+            scanf("%d", &quantidadeAdicional);
+
+
+            if (estoque[i].quantidade + quantidadeAdicional > 100) {
+                printf("Erro: Não é permitido ter mais de 100 unidades de um único produto.\n");
+                return 0;
+            }
+
+            estoque[i].quantidade += quantidadeAdicional;
+            printf("Nova quantidade de %s: %d\n", estoque[i].nome, estoque[i].quantidade);
+            break;
+        }
+    }
+
+
+    if (!produtoEncontrado) {
+        strcpy(estoque[*x].nome, nomeProduto);
+        printf("Digite a quantidade inicial:\n");
+        scanf("%d", &estoque[*x].quantidade);
+
+
+        if (estoque[*x].quantidade > 100) {
+            printf("Erro: Não é permitido cadastrar mais de 100 unidades de um único produto.\n");
+            return 0;
+        }
+
+        printf("Digite o preço do produto:\n");
+        scanf("%f", &estoque[*x].preco);
+        (*x)++;
+        printf("Produto adicionado com sucesso!\n");
+    }
+
+    return 1;
+}
+
+int registrarSaida(struct produto estoque[], int x) {
+    char nome_produto[100];
+    int quantidade_saida;
+    int produto_encontrado = 0;
+
+    printf("Digite o nome do produto para registrar a saída:\n");
+    scanf("%s", nome_produto);
+
+    for (int i = 0; i < x; i++) {
+        if (strcmp(estoque[i].nome, nome_produto) == 0) {
+            produto_encontrado = 1;
+
+            printf("\nQuantidade atual de %s no estoque: %d\n", estoque[i].nome, estoque[i].quantidade);
+
+            printf("Digite a quantidade a ser retirada: ");
+            scanf("%d", &quantidade_saida);
+
+            if (estoque[i].quantidade >= quantidade_saida) {
+                estoque[i].quantidade -= quantidade_saida;
+                printf("\nSaída registrada com sucesso!\nNova quantidade de %s: %d\n", estoque[i].nome, estoque[i].quantidade);
+            } else {
+                printf("\nErro: Quantidade insuficiente no estoque!\n\n");
+            }
+            break;
+        }
+    }
+
+    if (!produto_encontrado) {
+        printf("Erro: Produto não encontrado no estoque!\n");
+    }
+
+    return 1;
+}
+
+void exibirEstoque(struct produto estoque[], int x) {
+    printf("\nEstoque disponível:\n");
+    for (int i = 0; i < x; i++) {
+        printf("Produto: %s - Quantidade: %d - Preço: R$ %.2f\n", estoque[i].nome, estoque[i].quantidade, estoque[i].preco);
+    }
+    printf("\n");
+}
+
+void exibirValor(struct produto estoque[], int x) {
+    printf("\nEstoque disponível em valor:\n");
+    for (int i = 0; i < x; i++) {
+        estoque[i].valor = estoque[i].quantidade * estoque[i].preco;
+        printf("Produto: %s - Valor: R$ %.2f\n", estoque[i].nome, estoque[i].valor);
+    }
+    printf("\n");
+}
+
+int main(void) {
+    setlocale(LC_ALL, "Portuguese_Brazil");
+    int menu, x = 0;
+
+    struct produto estoque[100];
+
+    do {
+        printf("\nDigite o número do menu desejado:\n1. Adicionar Produto\n2. Registrar Saída\n3. Exibir Estoque\n4. Exibir Valor Total em Estoque\n0. Sair\n");
+        scanf("%d", &menu);
+
+        switch (menu) {
+            case 0:
+                break;
+
+            case 1:
+                adicionarProduto(estoque, &x);
+                break;
+
+            case 2:
+                registrarSaida(estoque, x);
+                break;
+
+            case 3:
+                exibirEstoque(estoque, x);
+                break;
+
+            case 4:
+                exibirValor(estoque, x);
+                break;
+
+            default:
+                printf("Comando inválido\n");
+                break;
+        }
+    } while (menu != 0);
+
+    return 0;
+}
